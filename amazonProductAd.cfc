@@ -109,7 +109,7 @@ component {
 			}
 		}
 		cftimer( type="debug", label="amzProductAd request" ) {
-			cfhttp( result="http", method="GET", url=out.requestUrl, charset="UTF-8", throwOnError=false, url=out.requestUrl, timeOut=this.httpTimeOut );
+			cfhttp( result="http", method="GET", url=out.requestUrl, charset="UTF-8", throwOnError=false, timeOut=this.httpTimeOut );
 			if ( this.throttle > 0 ) {
 				this.lastRequest= getTickCount();
 				server.amzad_lastRequest= this.lastRequest;
