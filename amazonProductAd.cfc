@@ -254,7 +254,7 @@ component {
 		return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	}
 
-	// public struct function TagLookup(required string TagName, string ResponseGroup="", required string Count, boolean parse="false") output=false {
+	// public struct function TagLookup(required string TagName, string ResponseGroup="", required string Count, boolean parse="false") {
 	// 	var params= {};
 	// 	params[ "Operation" ]= "TagLookup";
 	// 	params[ "TagName" ]= arguments.TagName;
