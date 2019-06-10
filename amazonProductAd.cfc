@@ -92,7 +92,7 @@ component {
 		}
 		arguments.keyList= listSort( structKeyList( arguments.params ), "textnocase", "asc" );
 		arguments.keyList= replace( arguments.keyList, "AssociateTag,AWSAccessKeyId", "AWSAccessKeyId,AssociateTag" );
-		//  Build arguments.canonical Query String 
+		// Build arguments.canonical Query String 
 		for ( key in arguments.keyList ) {
 			arguments.canonical &= amp & key & "=" & replaceList( urlEncodedFormat( arguments.params[ key ] ), "%2D", "-" );
 			amp= "&";
@@ -139,7 +139,7 @@ component {
 		} else {
 			out.success= true;
 		}
-		//  parse response 
+		// parse response 
 		if ( arguments.parse ) {
 			try {
 				out.xml= xmlParse( out.response  );
@@ -216,7 +216,7 @@ component {
 	}
 
 	struct function ItemSearch( string Keywords= "", string ResponseGroup= "small", string SearchIndex= "All", string Condition= "New", string Node= "", string Title= "", string MinPrice= "", string MaxPrice= "", string Page= 1, boolean parse= false ) {
-		//  1-10 
+		// 1-10 
 		var params= {};
 		params[ "Operation" ]= "ItemSearch";
 		params[ "ItemPage" ]= arguments.page;
