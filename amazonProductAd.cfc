@@ -66,7 +66,7 @@ component {
 		var amp= "";
 		var out= {
 			success= false
-		,	errorDetail= ""
+		,	error= ""
 		,	status= ""
 		,	statusCode= 0
 		,	response= ""
