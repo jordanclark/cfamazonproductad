@@ -156,7 +156,15 @@ component {
 		return out;
 	}
 
-	struct function ItemLookup( required string ItemID, string ResponseGroup= "", string SearchIndex= "All", string IdType= "", string Condition= "", string MerchantId= "", boolean parse= false ) {
+	struct function ItemLookup(
+		required string ItemID
+	,	string ResponseGroup= ""
+	,	string SearchIndex= "All"
+	,	string IdType= ""
+	,	string Condition= ""
+	,	string MerchantId= ""
+	,	boolean parse= false
+	) {
 		var params= {};
 		if ( !len( arguments.IdType ) ) {
 			arguments.IdType= "ASIN";
@@ -184,7 +192,15 @@ component {
 		return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	}
 
-	struct function ItemLookupBatch( required ItemIDs, string ResponseGroup= "", string SearchIndex= "All", string IdType= "", string Condition= "", string MerchantId= "", boolean parse= false ) {
+	struct function ItemLookupBatch(
+		required ItemIDs
+	,	string ResponseGroup= ""
+	,	string SearchIndex= "All"
+	,	string IdType= ""
+	,	string Condition= ""
+	,	string MerchantId= ""
+	,	boolean parse= false
+	) {
 		var params= {};
 		var x= 0;
 		if ( !len( arguments.IdType ) ) {
@@ -215,14 +231,26 @@ component {
 		return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	}
 
-	struct function ItemSearch( string Keywords= "", string ResponseGroup= "small", string SearchIndex= "All", string Condition= "New", string Node= "", string Title= "", string MinPrice= "", string MaxPrice= "", string Page= 1, boolean parse= false ) {
+	struct function ItemSearch(
+		string Keywords= ""
+	,	string ResponseGroup= "small"
+	,	string SearchIndex= "All"
+	,	string Condition= "New"
+	,	string Node= ""
+	,	string Title= ""
+	,	string MinPrice= ""
+	,	string MaxPrice= ""
+	,	string Page= 1
+	,	boolean parse= false
+	) {
 		// 1-10 
-		var params= {};
-		params[ "Operation" ]= "ItemSearch";
-		params[ "ItemPage" ]= arguments.page;
-		params[ "ResponseGroup" ]= arguments.ResponseGroup;
-		params[ "SearchIndex" ]= arguments.SearchIndex;
-		params[ "Condition" ]= arguments.condition;
+		var params= {
+			"Operation"= "ItemSearch"
+		,	"ItemPage"= arguments.page
+		,	"ResponseGroup"= arguments.ResponseGroup
+		,	"SearchIndex"= arguments.SearchIndex
+		,	"Condition"= arguments.condition
+		};
 		if ( len( arguments.node ) ) {
 			params[ "BrowseNode" ]= arguments.node;
 		}
@@ -238,10 +266,17 @@ component {
 		return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	}
 
-	struct function SimilarityLookup( required string ItemID, string SimilarityType= "", string ResponseGroup= "", string Condition= "", boolean parse= false ) {
-		var params= {};
-		params[ "Operation" ]= "SimilarityLookup";
-		params[ "ItemId" ]= arguments.ItemID;
+	struct function SimilarityLookup(
+		required string ItemID
+	,	string SimilarityType= ""
+	,	string ResponseGroup= ""
+	,	string Condition= ""
+	,	boolean parse= false
+	) {
+		var params= {
+			"Operation"= "SimilarityLookup"
+		,	"ItemId"= arguments.ItemID
+		};
 		if ( len( arguments.SimilarityType ) ) {
 			params[ "SimilarityType" ]= arguments.SimilarityType;
 		}
@@ -254,10 +289,16 @@ component {
 		return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	}
 
-	// public struct function TagLookup(required string TagName, string ResponseGroup="", required string Count, boolean parse="false") {
-	// 	var params= {};
-	// 	params[ "Operation" ]= "TagLookup";
-	// 	params[ "TagName" ]= arguments.TagName;
+	// public struct function TagLookup(
+	// 	required string TagName
+	// ,	string ResponseGroup= ""
+	// ,	required string Count
+	// ,	boolean parse= false
+	// ) {
+	// 	var params= {
+	// 	,	"Operation"= "TagLookup"
+	// 	,	"TagName"= arguments.TagName
+	//	};
 	// 	if ( len( arguments.ResponseGroup ) ) {
 	// 		params[ "ResponseGroup" ]= arguments.ResponseGroup;
 	// 	}
@@ -267,11 +308,16 @@ component {
 	// 	return this.apiRequest( apiMethod= "GET", params= params, parse= parse );
 	// }
 
-	struct function CartCreate( required string ItemID, string Quantity= 1, boolean parse= false ) {
-		var params= {};
+	struct function CartCreate(
+		required string ItemID
+	,	string Quantity= 1
+	,	boolean parse= false
+	) {
+		var params= {
+			"Operation"= "CartCreate"
+		};
 		var x= 1;
 		var i= "";
-		params[ "Operation" ]= "CartCreate";
 		for ( i in arguments.itemID ) {
 			params[ "Item.#x#.ASIN" ]= i;
 			params[ "Item.#x#.Quantity" ]= ( find( ",", arguments.Quantity ) >= x ? listGetAt( arguments.Quantity, x ) : arguments.Quantity );
