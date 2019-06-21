@@ -147,7 +147,7 @@ component {
 					out.error= out.xml.ItemLookupResponse.Items.Request.Errors.Error.Message.XmlText;
 				}
 			} catch (any cfcatch) {
-				out.error= "XML parse error: #cfcatch.message# #cfcatch.detail#";
+				out.error= "XML Error: " & (cfcatch.message?:"No catch message") & " " & (cfcatch.detail?:"No catch detail");
 			}
 		}
 		if ( len( out.error ) ) {
