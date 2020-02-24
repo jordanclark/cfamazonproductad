@@ -7,14 +7,22 @@
                                                       |_|                                                      
 ```
 # cfamazonproductad
-Amazon Product Advertising ColdFusion Rest API Client
+Amazon Product Advertising ColdFusion Rest API Client, new v5 API supported in amazonProductAd5.cfc, previous v4
+API available in amazonProductAd
+
+v5 has full api coverage of methods: GetBrowseNodes, GetItems, GetVariations, SearchItems, function takes the same
+arguments as the REST api in AWS documentation.
+
+Case of arguments is important, Lucee supports preserving case, but this might be an issue with Adobe ColdFusion which doesn't support "cfprocessingdirective( preserveCase=true )".
 
 ## To Install
 Run the following from commandbox:
 `box install cfamazonproductad`
 
 ## Changes
+2020-02-23 Complete rewrite to support new PAAPI v5
 2019-06-03 Open source release
 
 ## API documentation
+https://webservices.amazon.com/paapi5/documentation/
 https://docs.aws.amazon.com/AWSECommerceService/latest/DG/Welcome.html
