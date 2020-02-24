@@ -19,6 +19,19 @@ Case of arguments is important, Lucee supports preserving case, but this might b
 Run the following from commandbox:
 `box install cfamazonproductad`
 
+## Example usage
+```
+<cfscript>
+amz = new amazonProductAd5(
+	accessKeyId= "XXXXYYYYYZZZZ"
+,	secretAccessKey= "ABC123ABC123ABC123"
+,	partnerTag= "abcdefg-20"
+).usDefaults();
+test= amz.SearchItems( "fred", "ItemInfo.Title" );
+dump( test );
+</cfscript>
+```
+
 ## Changes
 2020-02-23 Complete rewrite to support new PAAPI v5
 2019-06-03 Open source release

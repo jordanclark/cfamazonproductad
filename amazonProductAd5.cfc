@@ -46,11 +46,35 @@ component {
 		return;
 	}
 
-	function setUsDefaults( string region="us-east-1"  ) {
+	function usDefaults( string region="us-east-1" ) {
 		this.defaultLanguage= [ "en_US" ];
 		this.defaultMarketplace= "www.amazon.com";
 		this.defaultCurrency= "USD";
-		this.region= "us-east-1";
+		this.region= arguments.region;
+		return this;
+	}
+
+	function canadaDefaults( string region="us-east-1" ) {
+		this.defaultLanguage= [ "en_CA" ];
+		this.defaultMarketplace= "www.amazon.ca";
+		this.defaultCurrency= "CAD";
+		this.region= arguments.region;
+		return this;
+	}
+
+	function ukDefaults( string region="us-east-1" ) {
+		this.defaultLanguage= [ "en_GB" ];
+		this.defaultMarketplace= "www.amazon.co.uk";
+		this.defaultCurrency= "GBP";
+		this.region= arguments.region;
+		return this;
+	}
+
+	function mexicoDefaults( string region="us-east-1" ) {
+		this.defaultLanguage= [ "es_MX" ];
+		this.defaultMarketplace= "www.amazon.com.mx";
+		this.defaultCurrency= "MXN";
+		this.region= arguments.region;
 		return this;
 	}
 
