@@ -1,18 +1,19 @@
 {
     "name":"cfamazonproductad",
     "slug":"cfamazonproductad",
-    "version":"0.6.2",
+    "version":"1.0.0",
     "author":"Jordan Clark <jordanclark@gmail.com>",
     "keywords":[
         "aws",
         "amazon",
         "product advertising",
+        "paapi",
         "api",
         "rest"
     ],
     "shortDescription":"API client for amazon product advertising api",
     "type":"modules",
-    "location":"jordanclark/cfamazonproductad#v0.6.2",
+    "location":"jordanclark/cfamazonproductad#v1.0.0",
     "repository":{
         "URL":"https://github.com/jordanclark/cfamazonproductad.git",
         "type":"GIT"
