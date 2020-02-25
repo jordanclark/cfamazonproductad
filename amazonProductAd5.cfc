@@ -18,6 +18,7 @@ component {
 	,	numeric httpTimeOut= 120
 	,	string httpMethod= "POST"
 	,	boolean debug= ( request.debug ?: false )
+	,	
 	) {
 		structAppend( this, arguments, true );
 		this.apiHost= listFirst( reReplaceNoCase( this.apiUrl, "https?\:\/\/", "" ), "/" );
@@ -26,9 +27,9 @@ component {
 			arguments.defaultLanguage= listToArray( arguments.defaultLanguage, this.defaultDelim );
 		}
 		this.offSet= getTimeZoneInfo().utcTotalOffset;
-		this.lastRequest= server.amzAd_lastRequest ?: 0;
 		this.hmacAlgorithm= "AWS4-HMAC-SHA256";
 		this.aws4Request= "aws4_request";
+		this.lastRequest= 0;
 		return this;
 	}
 
@@ -44,6 +45,20 @@ component {
 			cftrace( text=( isSimpleValue( arguments.input ) ? arguments.input : "" ), var=arguments.input, category="AmazonProductAd", type="information" );
 		}
 		return;
+	}
+
+	function getWait() {
+		var wait= 0;
+		this.lastRequest= max( this.lastRequest, server.amzad_lastRequest ?: 0 );
+		if( this.lastRequest > 0 && this.throttle > 0 ) {
+			wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
+		}
+		return wait;
+	}
+
+	function setLastReq() {
+		this.lastRequest= max( getTickCount(), server.amzad_lastRequest );
+		server.amzad_lastRequest= this.lastRequest;
 	}
 
 	function usDefaults( string region="us-east-1" ) {
@@ -151,12 +166,10 @@ component {
 		,	headers= out.requestHeaders
 		);
 		// throttle requests to keep it from going too fast
-		if( this.lastRequest > 0 && this.throttle > 0 ) {
-			out.wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
-			if( out.wait > 0 ) {
-				this.debugLog( "Pausing for #out.wait#/ms" );
-				sleep( out.wait );
-			}
+		out.wait= this.getWait();
+		if( out.wait > 0 ) {
+			this.debugLog( "Pausing for #out.wait#/ms" );
+			sleep( out.wait );
 		}
 		cftimer( type="debug", label="amzProductAd request" ) {
 			cfhttp( result="http", method="POST", url=out.requestUrl, charset="UTF-8", throwOnError=false, timeOut=this.httpTimeOut, userAgent= this.userAgent ) {
@@ -165,11 +178,8 @@ component {
 				}
 				cfhttpparam( type= "body", value= out.payload );
 			};
-			if( this.throttle > 0 ) {
-				this.lastRequest= getTickCount();
-				server.amzad_lastRequest= this.lastRequest;
-			}
 		}
+		this.setLastReq();
 		out.http= http;
 		out.response= toString( http.fileContent );
 		out.statusCode= http.responseHeader.Status_Code ?: 500;

@@ -21,7 +21,7 @@ component {
 		this.requestHost= "webservices.amazon.com";
 		this.requestURI= "/onca/xml";
 		this.offSet= getTimeZoneInfo().utcTotalOffset;
-		this.lastRequest= server.amzad_lastRequest ?: 0;
+		this.lastRequest= 0;
 		return this;
 	}
 
@@ -37,6 +37,20 @@ component {
 			cftrace( text=( isSimpleValue( arguments.input ) ? arguments.input : "" ), var=arguments.input, category="AmazonProductAd", type="information" );
 		}
 		return;
+	}
+
+	function getWait() {
+		var wait= 0;
+		this.lastRequest= max( this.lastRequest, server.amzad_lastRequest ?: 0 );
+		if( this.lastRequest > 0 && this.throttle > 0 ) {
+			wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
+		}
+		return wait;
+	}
+
+	function setLastReq() {
+		this.lastRequest= max( getTickCount(), server.amzad_lastRequest );
+		server.amzad_lastRequest= this.lastRequest;
 	}
 
 	/**
@@ -102,20 +116,16 @@ component {
 		arguments.params[ "Signature" ]= toBase64( HMAC_SHA256( this.secretAccessKey, arguments.block ) );
 		arguments.canonical &= amp & "Signature=" & replaceList( urlEncodedFormat( arguments.params[ "Signature" ] ), "%2D", "-" );
 		out.requestUrl= "#this.apiUrl#?#arguments.canonical#";
-		if( this.lastRequest > 0 && this.throttle > 0 ) {
-			out.wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
-			if( out.wait > 0 ) {
-				this.debugLog( "Pausing for #out.wait#/ms" );
-				sleep( out.wait );
-			}
+		
+		out.wait= this.getWait();
+		if( out.wait > 0 ) {
+			this.debugLog( "Pausing for #out.wait#/ms" );
+			sleep( out.wait );
 		}
 		cftimer( type="debug", label="amzProductAd request" ) {
 			cfhttp( result="http", method="GET", url=out.requestUrl, charset="UTF-8", throwOnError=false, timeOut=this.httpTimeOut );
-			if( this.throttle > 0 ) {
-				this.lastRequest= getTickCount();
-				server.amzad_lastRequest= this.lastRequest;
-			}
 		}
+		this.setLastReq();
 		out.response= toString( http.fileContent );
 		out.statusCode= http.responseHeader.Status_Code ?: 500;
 		this.debugLog( out.statusCode );
