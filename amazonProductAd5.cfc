@@ -56,8 +56,8 @@ component {
 		return wait;
 	}
 
-	function setLastReq() {
-		this.lastRequest= max( getTickCount(), server.amzad_lastRequest );
+	function setLastReq( numeric extra= 0 ) {
+		this.lastRequest= max( getTickCount(), server.amzad_lastRequest ) + arguments.extra;
 		server.amzad_lastRequest= this.lastRequest;
 	}
 
@@ -190,6 +190,7 @@ component {
 			out.error= "Error 401, unauthorized";
 		} else if( out.statusCode == "429" ) {
 			out.error= "Error 429, submitting requests too quickly";
+			this.setLastReq( this.throttle * 2 );
 		} else if( left( out.statusCode, 1 ) == "4" ) {
 			out.error= "Error #out.statusCode#, transient error, resubmit.";
 		} else if( left( out.statusCode, 1 ) == "5" ) {
