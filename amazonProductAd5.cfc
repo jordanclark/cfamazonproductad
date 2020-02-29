@@ -36,13 +36,13 @@ component {
 	function debugLog( required input ) {
 		if( structKeyExists( request, "log" ) && isCustomFunction( request.log ) ) {
 			if( isSimpleValue( arguments.input ) ) {
-				request.log( "AmazonProductAd: " & arguments.input );
+				request.log( "AmazonProductAd5: " & arguments.input );
 			} else {
-				request.log( "AmazonProductAd: (complex type)" );
+				request.log( "AmazonProductAd5: (complex type)" );
 				request.log( arguments.input );
 			}
 		} else if( this.debug ) {
-			cftrace( text=( isSimpleValue( arguments.input ) ? arguments.input : "" ), var=arguments.input, category="AmazonProductAd", type="information" );
+			cftrace( text=( isSimpleValue( arguments.input ) ? arguments.input : "" ), var=arguments.input, category="AmazonProductAd5", type="information" );
 		}
 		return;
 	}
@@ -189,7 +189,7 @@ component {
 			out.error= "Error 401, unauthorized";
 		} else if( out.statusCode == "429" ) {
 			out.error= "Error 429, submitting requests too quickly";
-			this.setLastReq( this.throttle * 2 );
+			this.setLastReq( this.throttle );
 		} else if( left( out.statusCode, 1 ) == "4" ) {
 			out.error= "Error #out.statusCode#, transient error, resubmit.";
 		} else if( left( out.statusCode, 1 ) == "5" ) {

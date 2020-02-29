@@ -134,7 +134,7 @@ component {
 			out.error= "Error 401, unauthorized";
 		} else if( out.statusCode == "503" ) {
 			out.error= "Error 503, submitting requests too quickly";
-			this.setLastReq( this.throttle * 2 );
+			this.setLastReq( this.throttle );
 		} else if( left( out.statusCode, 1 ) == "4" ) {
 			out.error= "Error #out.statusCode#, transient error, resubmit.";
 		} else if( left( out.statusCode, 1 ) == "5" ) {
