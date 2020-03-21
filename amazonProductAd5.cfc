@@ -57,7 +57,7 @@ component {
 	}
 
 	function setLastReq( numeric extra= 0 ) {
-		this.lastRequest= max( getTickCount(), server.amzad_lastRequest ) + arguments.extra;
+		this.lastRequest= max( getTickCount(), server.amzad_lastRequest ?: 0 ) + arguments.extra;
 		server.amzad_lastRequest= this.lastRequest;
 	}
 
