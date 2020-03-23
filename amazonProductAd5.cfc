@@ -410,7 +410,7 @@ component {
 	}
 
 	struct function SearchItems(
-		required string Keywords
+		string Keywords= ""
 	,	required Resources
 	,	string Actor= ""
 	,	string Artist= ""
