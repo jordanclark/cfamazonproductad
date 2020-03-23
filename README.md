@@ -32,8 +32,26 @@ dump( test );
 </cfscript>
 ```
 
+## Marketplace support
+Australia
+Brazil
+Canada
+France
+Germany
+India
+Italy
+Japan
+Mexico
+Netherlands
+Singapore
+Spain
+Turkey
+United Arab Emirates
+United Kingdom
+United States
+
 ## Changes
-2020-03-23 Added support for all amazon regions/markets to v5
+2020-03-23 Added support for all amazon regions/markets to v5. Breaking change to constructor arguments, replaced apiUrl with setEndPoint()
 2020-02-23 Complete rewrite to support new PAAPI v5
 2019-06-03 Open source release
 
