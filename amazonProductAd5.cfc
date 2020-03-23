@@ -11,9 +11,7 @@ component {
 	,	string defaultCurrency= ""
 	,	string defaultDelim= ";"
 	,	string region= "us-east-1"
-	,	string apiUrl= "https://webservices.amazon.com/paapi5"
-	,	string serviceName= "ProductAdvertisingAPI"
-	,	string userAgent= "cfAmazonProductAd5/v0.1"
+	,	string userAgent= "cfAmazonProductAd5/v0.2"
 	,	numeric throttle= 1000
 	,	numeric httpTimeOut= 120
 	,	string httpMethod= "POST"
@@ -21,8 +19,7 @@ component {
 	,	
 	) {
 		structAppend( this, arguments, true );
-		this.apiHost= listFirst( reReplaceNoCase( this.apiUrl, "https?\:\/\/", "" ), "/" );
-		this.apiPath= "/" & listDeleteAt( listDeleteAt( this.apiUrl, 1, "/" ), 1, "/" ) & "/";
+		this.setEndPoint( "webservices.amazon.com", "paapi5" );
 		if( isSimpleValue( this.defaultLanguage ) ) {
 			arguments.defaultLanguage= listToArray( arguments.defaultLanguage, this.defaultDelim );
 		}
@@ -30,6 +27,14 @@ component {
 		this.hmacAlgorithm= "AWS4-HMAC-SHA256";
 		this.aws4Request= "aws4_request";
 		this.lastRequest= 0;
+		this.amazonEncoding= "amz-1.0";
+		this.serviceName= "ProductAdvertisingAPI"
+		this.operationTargets= {
+			"GetBrowseNodes"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetBrowseNodes"
+		,	"GetItems"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems"
+		,	"GetVariations"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetVariations"
+		,	"SearchItems"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems"
+		};	
 		return this;
 	}
 
@@ -61,35 +66,153 @@ component {
 		server.amzad_lastRequest= this.lastRequest;
 	}
 
-	function usDefaults( string region="us-east-1" ) {
-		this.defaultLanguage= [ "en_US" ];
-		this.defaultMarketplace= "www.amazon.com";
-		this.defaultCurrency= "USD";
-		this.region= arguments.region;
+	function setEndPoint( required string hostName= "webservices.amazon.com", required string uri= "paapi5" ) {
+		this.apiUrl= "https://#arguments.hostName#/#arguments.uri#";
+		this.apiHost= arguments.hostName;
+		this.apiPath= "/#arguments.uri#/";
+	}
+
+	function australiaDefaults() {
+		this.defaultLanguage= [ "en_AU" ];
+		this.defaultMarketplace= "www.amazon.com.au";
+		this.setEndPoint( "webservices.amazon.com.au" );
+		this.defaultCurrency= "AUD";
+		this.region= "us-west-2";
 		return this;
 	}
 
-	function canadaDefaults( string region="us-east-1" ) {
+	function brazilDefaults() {
+		this.defaultLanguage= [ "pt_BR" ];
+		this.defaultMarketplace= "www.amazon.com.br";
+		this.setEndPoint( "webservices.amazon.com.br" );
+		this.defaultCurrency= "BRL";
+		this.region= "us-east-1";
+		return this;
+	}
+
+	function canadaDefaults() {
 		this.defaultLanguage= [ "en_CA" ];
 		this.defaultMarketplace= "www.amazon.ca";
+		this.setEndPoint( "webservices.amazon.ca" );
 		this.defaultCurrency= "CAD";
-		this.region= arguments.region;
+		this.region= "us-east-1";
 		return this;
 	}
 
-	function ukDefaults( string region="us-east-1" ) {
-		this.defaultLanguage= [ "en_GB" ];
-		this.defaultMarketplace= "www.amazon.co.uk";
-		this.defaultCurrency= "GBP";
-		this.region= arguments.region;
+	function franceDefaults() {
+		this.defaultLanguage= [ "fr_FR" ];
+		this.defaultMarketplace= "www.amazon.fr";
+		this.setEndPoint( "webservices.amazon.fr" );
+		this.defaultCurrency= "EUR";
+		this.region= "eu-west-1";
 		return this;
 	}
 
-	function mexicoDefaults( string region="us-east-1" ) {
+	function germanyDefaults( string language= "de_DE" ) {
+		this.defaultLanguage= [ arguments.language ]; // cs_CZ, de_DE, en_GB, nl_NL, pl_PL, tr_TR
+		this.defaultMarketplace= "www.amazon.de";
+		this.setEndPoint( "webservices.amazon.de" );
+		this.defaultCurrency= "EUR";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function indiaDefaults() {
+		this.defaultLanguage= [ "en_IN" ];
+		this.defaultMarketplace= "www.amazon.in";
+		this.setEndPoint( "webservices.amazon.in" );
+		this.defaultCurrency= "INR";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function italyDefaults() {
+		this.defaultLanguage= [ "it_IT" ];
+		this.defaultMarketplace= "www.amazon.it";
+		this.setEndPoint( "webservices.amazon.it" );
+		this.defaultCurrency= "EUR";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function japanDefaults( string language= "en_US" ) {
+		this.defaultLanguage= [ arguments.language ]; // en_US, ja_JP, zh_CN
+		this.defaultMarketplace= "www.amazon.co.jp";
+		this.setEndPoint( "webservices.amazon.co.jp" );
+		this.defaultCurrency= "JPY";
+		this.region= "us-west-2";
+		return this;
+	}
+
+	function mexicoDefaults() {
 		this.defaultLanguage= [ "es_MX" ];
 		this.defaultMarketplace= "www.amazon.com.mx";
+		this.setEndPoint( "webservices.amazon.com.mx" );
 		this.defaultCurrency= "MXN";
-		this.region= arguments.region;
+		this.region= "us-east-1";
+		return this;
+	}
+
+	function netherlandsDefaults() {
+		this.defaultLanguage= [ "nl_NL" ];
+		this.defaultMarketplace= "www.amazon.nl";
+		this.setEndPoint( "webservices.amazon.nl" );
+		this.defaultCurrency= "EUR";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function singaporeDefaults() {
+		this.defaultLanguage= [ "en_SG" ];
+		this.defaultMarketplace= "www.amazon.sg";
+		this.setEndPoint( "webservices.amazon.sg" );
+		this.defaultCurrency= "SGD";
+		this.region= "us-west-2";
+		return this;
+	}
+
+	function spainDefaults() {
+		this.defaultLanguage= [ "es_ES" ];
+		this.defaultMarketplace= "www.amazon.es";
+		this.setEndPoint( "webservices.amazon.es" );
+		this.defaultCurrency= "EUR";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function turkeyDefaults() {
+		this.defaultLanguage= [ "tr_TR" ];
+		this.defaultMarketplace= "www.amazon.com.tr";
+		this.setEndPoint( "webservices.amazon.com.tr" );
+		this.defaultCurrency= "TRY";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function uaeDefaults( string language= "en_AE" ) {
+		this.defaultLanguage= [ arguments.language ]; // en_AE, ar_AE
+		this.defaultMarketplace= "www.amazon.ae";
+		this.setEndPoint( "webservices.amazon.ae" );
+		this.defaultCurrency= "AED";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function ukDefaults() {
+		this.defaultLanguage= [ "en_GB" ];
+		this.defaultMarketplace= "www.amazon.co.uk";
+		this.setEndPoint( "webservices.amazon.co.uk" );
+		this.defaultCurrency= "GBP";
+		this.region= "eu-west-1";
+		return this;
+	}
+
+	function usDefaults( string language= "en_US", string currency= "USD" ) {
+		this.defaultLanguage= [ arguments.language ]; // en_US, de_DE, es_US, ko_KR, pt_BR, zh_CN, zh_TW
+		this.defaultMarketplace= "www.amazon.com";
+		this.setEndPoint( "webservices.amazon.com" );
+		this.defaultCurrency= arguments.currency; // AED,AMD,ARS,AUD,AWG,AZN,BGN,BND,BOB,BRL,BSD,BZD,CAD,CLP,CNY,COP,CRC,DOP,EGP,EUR,GBP,GHS,GTQ,HKD,HNL,HUF,IDR,ILS,INR,JMD,JPY,KES,KHR,KRW,KYD,KZT,LBP,MAD,MNT,MOP,MUR,MXN,MYR,NAD,NGN,NOK,NZD,PAB,PEN,PHP,PYG,QAR,RUB,SAR,SGD,THB,TRY,TTD,TWD,TZS,USD,UYU,VND,XCD
+		this.region= "us-east-1";
 		return this;
 	}
 
@@ -138,6 +261,7 @@ component {
 		arguments.headers[ "authorization" ]= auth;
 		return arguments.headers;
 	}
+
 	
 	struct function apiRequest( required string operation, required struct params ) {
 		var http= {};
@@ -151,8 +275,8 @@ component {
 		,	requestHeaders= {
 				"host"= this.apihost
 			,	"content-type"= "application/json; charset=utf-8"
-			,	"x-amz-target"= "com.amazon.paapi5.v1.#this.serviceName#v1.#arguments.operation#"
-			,	"content-encoding"= "amz-1.0"
+			,	"x-amz-target"= this.operationTargets[ arguments.operation ]
+			,	"content-encoding"= this.amazonEncoding
 			}
 		,	payload= ""
 		,	wait= 0
