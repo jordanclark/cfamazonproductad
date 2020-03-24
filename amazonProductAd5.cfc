@@ -54,16 +54,20 @@ component {
 
 	function getWait() {
 		var wait= 0;
-		this.lastRequest= max( this.lastRequest, server.amzad_lastRequest ?: 0 );
-		if( this.lastRequest > 0 && this.throttle > 0 ) {
-			wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
+		if( this.throttle > 0 ) {
+			this.lastRequest= max( this.lastRequest, server.amzad_lastRequest ?: 0 );
+			if( this.lastRequest > 0 ) {
+				wait= max( this.throttle - ( getTickCount() - this.lastRequest ), 0 );
+			}
 		}
 		return wait;
 	}
 
 	function setLastReq( numeric extra= 0 ) {
-		this.lastRequest= max( getTickCount(), server.amzad_lastRequest ?: 0 ) + arguments.extra;
-		server.amzad_lastRequest= this.lastRequest;
+		if( this.throttle > 0 ) {
+			this.lastRequest= max( getTickCount(), server.amzad_lastRequest ?: 0 ) + arguments.extra;
+			server.amzad_lastRequest= this.lastRequest;
+		}
 	}
 
 	function setEndPoint( required string hostName= "webservices.amazon.com", required string uri= "paapi5" ) {
