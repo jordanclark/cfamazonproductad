@@ -55,6 +55,9 @@ United States
 2020-02-23 Complete rewrite to support new PAAPI v5
 2019-06-03 Open source release
 
+## Contributions
+Thanks to Jeff Maciorowski for sponsoring adding/fixing foreign marketplace support in this api client.
+
 ## API documentation
 https://webservices.amazon.com/paapi5/documentation/
 https://docs.aws.amazon.com/AWSECommerceService/latest/DG/Welcome.html
