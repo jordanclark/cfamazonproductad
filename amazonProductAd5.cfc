@@ -1,5 +1,5 @@
 component {
-	cfprocessingdirective( preserveCase=true );
+	// 	cfprocessingdirective( preserveCase=true );
 
 	function init(
 		required string accessKeyId
@@ -15,9 +15,10 @@ component {
 	,	numeric throttle= 1000
 	,	numeric httpTimeOut= 120
 	,	string httpMethod= "POST"
-	,	boolean debug= ( request.debug ?: false )
-	,	
+	,	boolean debug
 	) {
+		arguments.debug = ( arguments.debug ?: request.debug ?: false );
+		
 		structAppend( this, arguments, true );
 		this.setEndPoint( "webservices.amazon.com", "paapi5" );
 		if( isSimpleValue( this.defaultLanguage ) ) {
@@ -28,13 +29,17 @@ component {
 		this.aws4Request= "aws4_request";
 		this.lastRequest= 0;
 		this.amazonEncoding= "amz-1.0";
-		this.serviceName= "ProductAdvertisingAPI"
+		this.serviceName= "ProductAdvertisingAPI";
 		this.operationTargets= {
 			"GetBrowseNodes"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetBrowseNodes"
 		,	"GetItems"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetItems"
 		,	"GetVariations"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.GetVariations"
 		,	"SearchItems"= "com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems"
-		};	
+		};
+
+		// Proper case of arguments for Adobe ColdFusion
+		this.fixCase= ["Keywords","Resources","Actor","Artist","Author","Availability","Brand","BrowseNodeId","Condition","CurrencyOfPreference","DeliveryFlags","ItemCount","ItemPage","LanguagesOfPreference","Marketplace","MaxPrice","MinPrice","Merchant","MinReviewsRating","MinSavingPercent","OfferCount","Properties","SearchIndex","SortBy","Title","PartnerTag","PartnerType","BrowseNodeIds","ASIN","VariationCount","VariationPage"];
+
 		return this;
 	}
 
@@ -227,14 +232,14 @@ component {
 		// copy headers into tree
 		arguments.headers[ "x-amz-date" ]= xAmzDate;
 		var headerTree= createObject( "java", "java.util.TreeMap" ).init();
-		for( h in arguments.headers ) {
+		for( var h in arguments.headers ) {
 			headerTree.put( lCase( h ), arguments.headers[ h ] );
 		}
 		// STEP 1: CREATE A CANONICAL REQUEST
 		var canonicalURL= this.httpMethod & "\n" & arguments.path & "\n" & "" & "\n"; // queryString
 		var signedHeaders= "";
 		// loop over treemap, somehow the aws needs it's "natural ordering" vs a regular cf struct
-		for( entry in headerTree.entrySet().toArray() ) {
+		for( var entry in headerTree.entrySet().toArray() ) {
 			signedHeaders= listAppend( signedHeaders, entry.getKey(), ";" );
 			canonicalURL &= entry.getKey() & ":" & entry.getValue() & "\n";
 		}
@@ -246,14 +251,14 @@ component {
 		var stringToSign= this.hmacAlgorithm & "\n"
 			& xAmzDate & "\n"
 			& currentDate & "/" & this.region & "/" & this.serviceName & "/" & this.aws4Request & "\n"
-			& lCase( hash( canonicalUrl, "SHA-256" ) )
+			& lCase( hash( canonicalUrl, "SHA-256" ) );
 		stringToSign= replace( stringToSign, "\n", chr(10), "all" );
 		// Step 2b: GET SIGNATURE KEY
 		var signature= charsetDecode( "AWS4" & this.secretAccessKey, "UTF-8" );
 		// Step 3: CALCULATE THE SIGNATURE: 
 		for( var part in [ currentDate, this.region, this.serviceName, this.aws4Request, stringToSign ] ) {
 			// run hmacSha256 against a series of message keys
-			signature= binaryDecode( HMAC( part, signature, "HMACSHA256", "UTF-8" ), "HEX" )
+			signature= binaryDecode( HMAC( part, signature, "HMACSHA256", "UTF-8" ), "HEX" );
 		}
 		signature= lCase( binaryEncode( signature, "HEX" ) );
 		// Step 4: CALCULATE AUTHORIZATION HEADER
@@ -308,7 +313,9 @@ component {
 			};
 		}
 		this.setLastReq();
-		out.http= http;
+		if( this.debug ) {
+			out.http= http;
+		}
 		out.response= toString( http.fileContent );
 		out.statusCode= http.responseHeader.Status_Code ?: 500;
 		if( len( out.error ) ) {
@@ -334,11 +341,11 @@ component {
 		try {
 			out.data= deserializeJSON( out.response );
 			if( structKeyExists( out.data, "errors" ) && isArray( out.data.errors ) ) {
-				for( e in out.data.errors ) {
+				for( var e in out.data.errors ) {
 					out.error &= e.Message & " ";
 				}
 			}
-		} catch (any cfcatch) {
+		} catch( any cfcatch ) {
 			out.error= "JSON Error: " & (cfcatch.message?:"No catch message") & " " & (cfcatch.detail?:"No catch detail");
 		}
 		if( len( out.error ) ) {
@@ -348,19 +355,28 @@ component {
 		return out;
 	}
 
-	struct function cleanArguments( args ) {
-		for( a in args ) {
+	struct function cleanArguments( required struct args ) {
+		var out = {};
+		for( var a in args ) {
+			// fix case
+			a = this.fixCase[ arrayFindNoCase( this.fixCase, a ) ];
 			if( isNull( args[ a ] ) ) {
-				structDelete( args, a );
+				// structDelete( args, a );
+				// do nothing
 			} else if( isSimpleValue( args[ a ] ) && !len( args[ a ] ) ) {
-				structDelete( args, a );
+				// structDelete( args, a );
+				// do nothing
 			} else if( isArray( args[ a ] ) && !arrayLen( args[ a ] ) ) {
-				structDelete( args, a );
+				// structDelete( args, a );
+				// do nothing
 			} else if( isStruct( args[ a ] ) && structCount( args[ a ] ) == 0 ) {
-				structDelete( args, a );
+				// structDelete( args, a );
+				// do nothing
+			} else {
+				out[ a ] = args[ a ];
 			}
 		}
-		return args;
+		return out;
 	}
 
 	struct function GetItems(
@@ -382,7 +398,7 @@ component {
 		if( isSimpleValue( arguments.Resources ) ) {
 			arguments.Resources= listToArray( arguments.Resources, this.defaultDelim );
 		}
-		if( len( arguments.LanguagesOfPreference ) && isSimpleValue( arguments.LanguagesOfPreference ) ) {
+		if( isSimpleValue( arguments.LanguagesOfPreference ) && len( arguments.LanguagesOfPreference ) ) {
 		 	arguments.LanguagesOfPreference= listToArray( arguments.LanguagesOfPreference, this.defaultDelim );
 		}
 		arguments= this.cleanArguments( arguments );
@@ -406,7 +422,7 @@ component {
 		if( isSimpleValue( arguments.Resources ) ) {
 			arguments.Resources= listToArray( arguments.Resources, this.defaultDelim );
 		}
-		if( len( arguments.LanguagesOfPreference ) && isSimpleValue( arguments.LanguagesOfPreference ) ) {
+		if( isSimpleValue( arguments.LanguagesOfPreference ) && len( arguments.LanguagesOfPreference ) ) {
 		 	arguments.LanguagesOfPreference= listToArray( arguments.LanguagesOfPreference, this.defaultDelim );
 		}
 		arguments= this.cleanArguments( arguments );
@@ -448,7 +464,7 @@ component {
 		if( structKeyExists( arguments, "DeliveryFlags" ) && isSimpleValue( arguments.DeliveryFlags ) ) {
 		 	arguments.DeliveryFlags= listToArray( arguments.DeliveryFlags, this.defaultDelim );
 		}
-		if( len( arguments.LanguagesOfPreference ) && isSimpleValue( arguments.LanguagesOfPreference ) ) {
+		if( isSimpleValue( arguments.LanguagesOfPreference ) && len( arguments.LanguagesOfPreference ) ) {
 		 	arguments.LanguagesOfPreference= listToArray( arguments.LanguagesOfPreference, this.defaultDelim );
 		}
 		arguments= this.cleanArguments( arguments );
@@ -472,12 +488,11 @@ component {
 		if( structKeyExists( arguments, "DeliveryFlags" ) && isSimpleValue( arguments.DeliveryFlags ) ) {
 		 	arguments.DeliveryFlags= listToArray( arguments.DeliveryFlags, this.defaultDelim );
 		}
-		if( len( arguments.LanguagesOfPreference ) && isSimpleValue( arguments.LanguagesOfPreference ) ) {
+		if( isSimpleValue( arguments.LanguagesOfPreference ) && len( arguments.LanguagesOfPreference ) ) {
 		 	arguments.LanguagesOfPreference= listToArray( arguments.LanguagesOfPreference, this.defaultDelim );
 		}
 		arguments= this.cleanArguments( arguments );
 		return this.apiRequest( "GetBrowseNodes", arguments );
 	}
-
 
 }

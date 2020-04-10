@@ -51,6 +51,7 @@ United Kingdom
 United States
 
 ## Changes
+2020-04-10 Added support for Adobe ColdFusion 2018, ColdFusion 2016 & ColdFusion 11, thanks CommandBox!
 2020-03-23 Added support for all amazon regions/markets to v5. Breaking change to constructor arguments, replaced apiUrl with setEndPoint()
 2020-02-23 Complete rewrite to support new PAAPI v5
 2019-06-03 Open source release
