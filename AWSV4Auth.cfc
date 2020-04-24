@@ -1,5 +1,5 @@
 component {
-	cfprocessingdirective( preserveCase=true );
+	// cfprocessingdirective( preserveCase=true );
 
 	this.awsAccessKey= "";
 	this.awsSecretKey= "";
@@ -51,7 +51,7 @@ component {
 	
 	function buildHeaders( struct headers ) {
 		this.headers= createObject( "java", "java.util.TreeMap" ).init();
-		for( h in arguments.headers ) {
+		for( var h in arguments.headers ) {
 			this.headers.put( h, arguments.headers[ h ] );
 		}
 		return this;
