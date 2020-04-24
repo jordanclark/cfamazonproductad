@@ -8,8 +8,9 @@ component {
 	,	string service= "AWSECommerceService"
 	,	numeric throttle= 1250
 	,	numeric httpTimeOut= 120
-	,	boolean debug= ( request.debug ?: false )
+	,	boolean debug
 	) {
+		this.debug = ( arguments.debug ?: request.debug ?: false );
 		this.accessKeyId= arguments.accessKeyId;
 		this.secretAccessKey= arguments.secretAccessKey;
 		this.associateTag= arguments.associateTag;
