@@ -38,7 +38,7 @@ component {
 		};
 
 		// Proper case of arguments for Adobe ColdFusion
-		this.fixCase= ["Keywords","Resources","Actor","Artist","Author","Availability","Brand","BrowseNodeId","Condition","CurrencyOfPreference","DeliveryFlags","ItemCount","ItemPage","LanguagesOfPreference","Marketplace","MaxPrice","MinPrice","Merchant","MinReviewsRating","MinSavingPercent","OfferCount","Properties","SearchIndex","SortBy","Title","PartnerTag","PartnerType","BrowseNodeIds","ASIN","VariationCount","VariationPage"];
+		this.fixCase= ["Keywords","Resources","Actor","Artist","Author","Availability","Brand","BrowseNodeId","Condition","CurrencyOfPreference","DeliveryFlags","ItemCount","ItemPage","LanguagesOfPreference","Marketplace","MaxPrice","MinPrice","Merchant","MinReviewsRating","MinSavingPercent","OfferCount","Properties","SearchIndex","SortBy","Title","PartnerTag","PartnerType","BrowseNodeIds","ASIN","VariationCount","VariationPage","ItemIds","IdType"];
 
 		return this;
 	}
