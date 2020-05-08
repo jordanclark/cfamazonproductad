@@ -7,13 +7,15 @@
                                                       |_|                                                      
 ```
 # cfamazonproductad
-Amazon Product Advertising ColdFusion Rest API Client, new v5 API supported in amazonProductAd5.cfc, previous v4
-API available in amazonProductAd
+Amazon Product Advertising ColdFusion Rest API Client, new v5 API supported in amazonProductAd5.cfc
 
 v5 has full api coverage of methods: GetBrowseNodes, GetItems, GetVariations, SearchItems, function takes the same
 arguments as the REST api in AWS documentation.
 
 Case of arguments is important, Lucee supports preserving case, but this might be an issue with Adobe ColdFusion which doesn't support "cfprocessingdirective( preserveCase=true )".
+
+# Breaking change
+The previous v4 API in amazonProductAd.cfc is no longer functional and has been removed.
 
 ## To Install
 Run the following from commandbox:
@@ -51,10 +53,11 @@ United Kingdom
 United States
 
 ## Changes
-2020-04-10 Added support for Adobe ColdFusion 2018, ColdFusion 2016 & ColdFusion 11, thanks CommandBox!
-2020-03-23 Added support for all amazon regions/markets to v5. Breaking change to constructor arguments, replaced apiUrl with setEndPoint()
-2020-02-23 Complete rewrite to support new PAAPI v5
-2019-06-03 Open source release
+* 2020-05-08 Removed v4 API which no longer works
+* 2020-04-10 Added support for Adobe ColdFusion 2018, ColdFusion 2016 & ColdFusion 11, thanks CommandBox!
+* 2020-03-23 Added support for all amazon regions/markets to v5. Breaking change to constructor arguments, replaced apiUrl with setEndPoint()
+* 2020-02-23 Complete rewrite to support new PAAPI v5
+* 2019-06-03 Open source release
 
 ## Contributions
 Thanks to Jeff Maciorowski for sponsoring adding/fixing foreign marketplace support in this api client.
