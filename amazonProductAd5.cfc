@@ -297,6 +297,10 @@ component {
 		};
 		// serialize params to json
 		out.payload= serializeJSON( arguments.params );
+		if( left( out.payload == "//" ) ) {
+			// adobe coldfusion secureJSON setting might break the json
+			out.payload= replace( out.payload, "//", "" );
+		}
 		// sign request with public/private keys
 		this.awsV4SignReq(
 			path= this.apiPath & lCase( arguments.operation )
