@@ -295,12 +295,8 @@ component {
 		,	payload= ""
 		,	wait= 0
 		};
-		// serialize params to json
-		out.payload= serializeJSON( arguments.params );
-		if( left( out.payload, 2 ) == "//" ) {
-			// adobe coldfusion secureJSON setting might break the json
-			out.payload= replace( out.payload, "//", "" );
-		}
+		// serialize params to json, disable secureJSON
+		out.payload= serializeJSON( arguments.params, false, false );
 		// sign request with public/private keys
 		this.awsV4SignReq(
 			path= this.apiPath & lCase( arguments.operation )
