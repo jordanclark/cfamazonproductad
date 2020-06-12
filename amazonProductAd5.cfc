@@ -297,7 +297,7 @@ component {
 		};
 		// serialize params to json
 		out.payload= serializeJSON( arguments.params );
-		if( left( out.payload == "//" ) ) {
+		if( left( out.payload, 2 ) == "//" ) {
 			// adobe coldfusion secureJSON setting might break the json
 			out.payload= replace( out.payload, "//", "" );
 		}
