@@ -364,11 +364,11 @@ component {
 		var out = {};
 		for( var a in args ) {
 			// fix case
-			var case= arrayFindNoCase( this.fixCase, a );
-			if( !case ) {
+			var c= arrayFindNoCase( this.fixCase, a );
+			if( !c ) {
 				this.debugLog( 'Missing case: for #a#' );
 			}
-			a = ( case ? this.fixCase[ case ] : a );
+			a = ( c ? this.fixCase[ c ] : a );
 			if( isNull( args[ a ] ) ) {
 				// structDelete( args, a );
 				// do nothing
