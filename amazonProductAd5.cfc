@@ -38,7 +38,7 @@ component {
 		};
 
 		// Proper case of arguments for Adobe ColdFusion
-		this.fixCase= ["Keywords","Resources","Actor","Artist","Author","Availability","Brand","BrowseNodeId","Condition","CurrencyOfPreference","DeliveryFlags","ItemCount","ItemPage","LanguagesOfPreference","Marketplace","MaxPrice","MinPrice","Merchant","MinReviewsRating","MinSavingPercent","OfferCount","Properties","SearchIndex","SortBy","Title","PartnerTag","PartnerType","BrowseNodeIds","ASIN","VariationCount","VariationPage","ItemIds","IdType"];
+		this.fixCase= ["Keywords","Resources","Actor","Artist","Author","Availability","Brand","BrowseNodeId","Condition","CurrencyOfPreference","DeliveryFlags","ItemCount","ItemPage","LanguagesOfPreference","Marketplace","MaxPrice","MinPrice","Merchant","MinReviewsRating","MinSavingPercent","OfferCount","Properties","SearchIndex","SortBy","Title","PartnerTag","PartnerType","BrowseNodeIds","ASIN","VariationCount","VariationPage","ItemIds","ItemIdType"];
 
 		return this;
 	}
@@ -391,7 +391,7 @@ component {
 	struct function GetItems(
 		required ItemIds
 	,	required Resources= ""
-	,	string IdType= "ASIN"
+	,	string ItemIdType= "ASIN"
 	,	string Condition= "Any" // New, Used, Collectible, Refurbished
 	,	string CurrencyOfPreference= this.defaultCurrency
 	,	LanguagesOfPreference= this.defaultLanguage
